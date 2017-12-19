@@ -3,6 +3,7 @@ This is the backend :)
 
 ## TODO
  * enable Scheduling
+ * use SNS and a DeadLetterQueue instead of async lambda calls?
  * ...
 
 ## Notes to self:
