@@ -1,5 +1,7 @@
+import json
 import os
 import logging
+
 import boto3
 
 logger = logging.getLogger()
@@ -14,6 +16,10 @@ def handler(event, context):
     client.invoke(
         FunctionName = worker,
         InvocationType = 'Event',
-        Payload = b"{'name': 'test'}",
+        Payload = json.dumps(
+            {
+                'reason': 'test'
+            }
+        ),
     )
     return 'Success?'

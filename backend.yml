@@ -54,6 +54,7 @@ Resources:
     Properties:
       Handler: scheduler.handler
       CodeUri: ./code/scheduler.py
+      Role: !Sub ${CheckSchedulerRole.Arn}
       Environment:
         Variables:
           WORKER_LAMBDA_NAME: !Ref CheckWorker
@@ -69,6 +70,37 @@ Resources:
     Properties:
       Handler: worker.handler
       CodeUri: ./code/worker.py
+
+  # IAM role for allowing the scheduler to invoke the workers
+  CheckSchedulerRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: '2012-10-17'
+        Statement: 
+        - Effect: Allow
+          Principal: 
+            Service: lambda.amazonaws.com
+          Action: 
+          - sts:AssumeRole
+      Path: '/'
+      Policies: 
+      - PolicyName: logs
+        PolicyDocument: 
+          Statement: 
+          - Effect: Allow
+            Action: 
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: arn:aws:logs:*:*:*
+      - PolicyName: lambda
+        PolicyDocument: 
+          Statement: 
+          - Effect: Allow
+            Action: 
+            - lambda:InvokeFunction
+            Resource: !Sub ${CheckWorker.Arn}
 
   ## application state in DynamoDB
   #Table:
