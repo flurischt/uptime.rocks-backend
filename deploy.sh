@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# get requirements and put everything into code.zip
+python3.6 -m pip install --upgrade -r code/requirements.txt -t code/
+cd code/ && zip ../code.zip -qr ./ && cd ..
+
 # package
 aws cloudformation package \
  --template-file ./backend.yml \

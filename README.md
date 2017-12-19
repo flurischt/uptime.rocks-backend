@@ -14,6 +14,13 @@ python3 -m pip install awscli
 aws configure
 ...
 ```
+
+### Keys
+```bash
+aws kms create-key
+aws kms encrypt --key-id THE-KEY-ID --plaintext "some secret stuff..."
+```
+
 ### Deployment
  * `./deploy.sh`
 

@@ -4,3 +4,10 @@ __pycache__/
 
 # generated template
 packaged-template.yml
+
+#
+code.zip
+code/*
+!*.py
+!requirements.txt
+code/local_secrets.py

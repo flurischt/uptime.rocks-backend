@@ -37,8 +37,8 @@ Resources:
   Ping:
     Type: AWS::Serverless::Function
     Properties:
+      CodeUri: ./code.zip
       Handler: ping.handler
-      CodeUri: ./code/ping.py
       Events:
         GetApi:
           Type: Api
@@ -52,8 +52,8 @@ Resources:
   CheckScheduler:
     Type: AWS::Serverless::Function
     Properties:
+      CodeUri: ./code.zip
       Handler: scheduler.handler
-      CodeUri: ./code/scheduler.py
       Role: !Sub ${CheckSchedulerRole.Arn}
       Environment:
         Variables:
@@ -68,8 +68,8 @@ Resources:
   CheckWorker:
     Type: AWS::Serverless::Function
     Properties:
+      CodeUri: ./code.zip
       Handler: worker.handler
-      CodeUri: ./code/worker.py
 
   # IAM role for allowing the scheduler to invoke the workers
   CheckSchedulerRole:
