@@ -10,7 +10,6 @@ Globals:
     #Handler: index.handler # currently defined for each resource
     #Environment:
     #  Variables:
-    #    SOME_EXAMPLE_ENV: whatever
     #    #TABLE_NAME: !Ref Table
 
 Resources:
@@ -49,17 +48,27 @@ Resources:
             RestApiId:
               Ref: PingApi
 
-  # Scheduler function that enqueues all "check"-jobs
+  # Scheduler function that asynchronously calls the workers
   CheckScheduler:
     Type: AWS::Serverless::Function
     Properties:
       Handler: scheduler.handler
       CodeUri: ./code/scheduler.py
+      Environment:
+        Variables:
+          WORKER_LAMBDA_NAME: !Ref CheckWorker
       #Events: # TODO: enable schedule
       #  Scheduling:
       #    Type: Schedule
       #    Properties:
       #      Schedule: rate(5 minutes)
+
+  # worker that checks the uptime of a service
+  CheckWorker:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: worker.handler
+      CodeUri: ./code/worker.py
 
   ## application state in DynamoDB
   #Table:
