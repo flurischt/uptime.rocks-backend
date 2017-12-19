@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Backend for uptime.rocks
+Globals:
+  Function:
+    Runtime: python3.6
+    Timeout: 180
+    # TODO: cleanup global settings and environment variables
+    #MemorySize: 256
+    #Handler: index.handler # currently defined for each resource
+    #Environment:
+    #  Variables:
+    #    SOME_EXAMPLE_ENV: whatever
+    #    #TABLE_NAME: !Ref Table
+
+Resources:
+  # /ping API to be called by clients
+  PingApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      DefinitionBody:
+        swagger: 2.0
+        info:
+          title:
+            Ref: AWS::StackName
+        paths:
+          "/ping":
+            get:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Ping.Arn}/invocations
+              responses: {}
+
+  # handler for /ping API
+  Ping:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: ping.handler
+      CodeUri: ./code/ping.py
+      Events:
+        GetApi:
+          Type: Api
+          Properties:
+            Path: /ping
+            Method: GET
+            RestApiId:
+              Ref: PingApi
+
+  # Scheduler function that enqueues all "check"-jobs
+  CheckScheduler:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: scheduler.handler
+      CodeUri: ./code/scheduler.py
+      #Events: # TODO: enable schedule
+      #  Scheduling:
+      #    Type: Schedule
+      #    Properties:
+      #      Schedule: rate(5 minutes)
+
+  ## application state in DynamoDB
+  #Table:
+  #  Type: AWS::Serverless::SimpleTable
