@@ -20,3 +20,5 @@ aws configure
 ### Notes
  * https://github.com/awslabs/serverless-application-model/blob/master/HOWTO.md
  * https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md
+ * https://cloudonaut.io/integrate-sqs-and-lambda-serverless-architecture-for-asynchronous-workloads/
+ * http://docs.aws.amazon.com/sns/latest/dg/sns-lambda.html
