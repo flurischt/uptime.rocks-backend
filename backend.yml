@@ -108,6 +108,7 @@ Resources:
             Action: 
             - dynamodb:PutItem
             - dynamidb:GetItem
+            - dynamodb:Scan
             Resource: !Sub ${StatusTable.Arn}
 
   # application state in DynamoDB

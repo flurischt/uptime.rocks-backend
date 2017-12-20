@@ -29,7 +29,9 @@ def handler(event, context):
         lambdas.invoke(
             FunctionName = worker_name,
             InvocationType = 'Event',
-            Payload = json.dumps(item), # TODO: maybe only transfer the id and not the whole item?
+            Payload = json.dumps({
+                'id': item['id']
+            }),
         )
 
     return json.dumps({
