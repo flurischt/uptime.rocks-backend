@@ -5,9 +5,11 @@ __pycache__/
 # generated template
 packaged-template.yml
 
-#
 code.zip
+# ignore code
 code/*
-!*.py
+# execpt our own module
+!code/uptime
 !requirements.txt
+!code/local_secrets.py.txt
 code/local_secrets.py

@@ -1,29 +1,27 @@
 import json
 import os
-import logging
 import boto3
-
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+from uptime.logging import sentry_client, logger
 
 # dynamodb prototype
 status_table = boto3.resource('dynamodb').Table(os.getenv('TABLE_NAME'))
 
-
+@sentry_client.capture_exceptions
 def handler(event, context):
     logger.info('scheduler.handler got event {}'.format(event))
     # let's try out dynamodb
     from random import randint
-    status_table.put_item(
-        Item={
-            'id': str(randint(0, 10000)),
-            'username': 'janedoe',
-            'first_name': 'Jane',
-            'last_name': 'Doe',
-            'age': 25,
-            'account_type': 'standard_user',
-        }
-    )
+    import time
+    for _ in range(100):
+        id = str(randint(0, 10000))
+        status_table.put_item(
+            Item={
+                'id': id,
+                'last_check': int(time.time()),
+                'label': 'label nr. {}'.format(id),
+                'whatever': 'bli bla blu',
+            }
+        )
 
     # async invoke the worker
     client = boto3.client('lambda')
