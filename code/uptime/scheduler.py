@@ -10,7 +10,7 @@ from uptime.logging import sentry_client, logger
 status_table = boto3.resource('dynamodb').Table(os.getenv('TABLE_NAME'))
 
 lambdas = boto3.client('lambda')
-worker_name = os.getenv['WORKER_LAMBDA_NAME']
+worker_name = os.getenv('WORKER_LAMBDA_NAME')
 
 UPDATE_INTERVAL_IN_SEC = 5 * 60
 
