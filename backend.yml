@@ -8,9 +8,9 @@ Globals:
     # TODO: cleanup global settings and environment variables
     #MemorySize: 256
     #Handler: index.handler # currently defined for each resource
-    #Environment:
-    #  Variables:
-    #    #TABLE_NAME: !Ref Table
+    Environment:
+      Variables:
+        TABLE_NAME: !Ref StatusTable
 
 Resources:
   # /ping API to be called by clients
@@ -101,7 +101,15 @@ Resources:
             Action: 
             - lambda:InvokeFunction
             Resource: !Sub ${CheckWorker.Arn}
+      - PolicyName: dynamodb
+        PolicyDocument: 
+          Statement: 
+          - Effect: Allow
+            Action: 
+            - dynamodb:PutItem
+            - dynamidb:GetItem
+            Resource: !Sub ${StatusTable.Arn}
 
-  ## application state in DynamoDB
-  #Table:
-  #  Type: AWS::Serverless::SimpleTable
+  # application state in DynamoDB
+  StatusTable:
+    Type: AWS::Serverless::SimpleTable
