@@ -20,6 +20,7 @@ def handler(event, context):
     # get all services that have not been checked in the last UPDATE_INTERVAL_IN_SEC seconds
     last_check_time = int(time.time()) - UPDATE_INTERVAL_IN_SEC
     response = status_table.scan(
+        ProjectionExpression='id',
         FilterExpression = Attr('last_check').lt(last_check_time)
     )
     logger.info('Found {} services to be checked.'.format(response['Count']))
@@ -29,9 +30,7 @@ def handler(event, context):
         lambdas.invoke(
             FunctionName = worker_name,
             InvocationType = 'Event',
-            Payload = json.dumps({
-                'id': item['id']
-            }),
+            Payload = json.dumps(item),
         )
 
     return json.dumps({
