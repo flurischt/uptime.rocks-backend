@@ -2,8 +2,16 @@
 
 # get requirements and put everything into code.zip
 echo packaging code.zip
-python3.6 -m pip install -q --upgrade -r code/requirements.txt -t code/
-cd code/ && zip ../code.zip -qr ./ && cd ..
+rm -rf code/requirements/*
+touch code/requirements/.gitkeep
+python3.6 -m pip install -q --upgrade -r code/requirements.txt -t code/requirements/
+
+# add our code and the requirements/ directory to the zip
+cd code/ 
+zip ../code.zip -qr ./uptime 
+cd requirements/
+zip ../../code.zip --grow -qr ./*
+cd ../../
 
 # package
 aws cloudformation package \

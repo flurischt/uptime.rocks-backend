@@ -1,15 +1,13 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.DS_Store
 
 # generated template
 packaged-template.yml
 
 code.zip
-# ignore code
-code/*
-# execpt our own module
-!code/uptime
-!requirements.txt
+code/requirements/
+!code/requirements/.gitkeep
 !code/local_secrets.py.txt
 code/local_secrets.py
