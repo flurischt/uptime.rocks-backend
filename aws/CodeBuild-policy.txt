@@ -1,0 +1,92 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:logs:eu-central-1:************:log-group:/aws/codebuild/uptime-rocks-deployment",
+                "arn:aws:logs:eu-central-1:************:log-group:/aws/codebuild/uptime-rocks-deployment:*"
+            ],
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:cloudformation:eu-central-1:************:stack/uptime-rocks/*"
+            ],
+            "Action": [
+                "cloudformation:*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:cloudformation:eu-central-1:aws:transform/Serverless-2016-10-31"
+            ],
+            "Action": [
+                "cloudformation:CreateChangeSet"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:s3:::uptime-rocks-backend",
+                "arn:aws:s3:::uptime-rocks-backend/*"
+            ],
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:GetObjectVersion"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Resource": [
+                "*"
+            ],
+            "Action": [
+                "iam:GetRole"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:lambda:eu-central-1:************:function:uptime-rocks-*"
+            ],
+            "Action": [
+                "lambda:*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Resource": [
+                "*"
+            ],
+            "Action": [
+                "lambda:ListTags",
+                "lambda:TagResource",
+                "lambda:UntagResource"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:dynamodb:eu-central-1:************:table/uptime-rocks-*"
+            ],
+            "Action": [
+                "dynamoDb:*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:GetParameters"
+            ],
+            "Resource": "arn:aws:ssm:eu-central-1:************:parameter/CodeBuild/*"
+        }
+    ]
+}
