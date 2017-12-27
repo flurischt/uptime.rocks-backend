@@ -39,7 +39,9 @@ def handler(event, context):
     label = service_to_process['label']
     status_code = 0
     try:
-        response = requests.get(url)
+        response = requests.get(url, headers={
+            'User-Agent': 'UptimeCheck/0.1 (https://uptime.rocks)'
+        })
         status_code = response.status_code
         logger.info('service-id {}: http-check resulted in status-code: {}'.format(item_id, status_code))
     except RequestException:

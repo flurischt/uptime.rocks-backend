@@ -6,6 +6,7 @@ This is the backend :)
 ## TODO
  * ~~enable Scheduling~~
  * ~~enable notifications~~
+ * ~~use custom user-agent~~
  * enable "passive" monitoring (service notifies us about status)
  * contact AWS support to get out of SES sandbox
  * other notification types
