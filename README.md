@@ -5,7 +5,10 @@ This is the backend :)
 
 ## TODO
  * ~~enable Scheduling~~
- * enable notifications
+ * ~~enable notifications~~
+ * enable "passive" monitoring (service notifies us about status)
+ * contact AWS support to get out of SES sandbox
+ * other notification types
  * frontend
  * use SNS and a DeadLetterQueue instead of async lambda calls?
  * ...
