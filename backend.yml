@@ -58,11 +58,11 @@ Resources:
       Environment:
         Variables:
           WORKER_LAMBDA_NAME: !Ref CheckWorker
-      #Events: # TODO: enable schedule
-      #  Scheduling:
-      #    Type: Schedule
-      #    Properties:
-      #      Schedule: rate(5 minutes)
+      Events:
+        Scheduling:
+          Type: Schedule
+          Properties:
+            Schedule: rate(5 minutes)
 
   # worker that checks the uptime of a service
   CheckWorker:
