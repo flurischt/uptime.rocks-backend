@@ -72,7 +72,8 @@ def update_item(item, success=True):
     # since we'll use PUT make sure that the caller has provided all attributes
     # if an attribute is missing then this would be deleted from the database
     # TODO: needs a fix for schema-updates
-    if not SCHEMA.keys() - (SCHEMA.keys() & item.keys()):
+    schema_keys_not_written = SCHEMA.keys() - item.keys()
+    if len(schema_keys_not_written) > 0:
         raise Exception("update_item() called without providing all necessary SCHEMA-attributes!")
     item['last_check'] = int(time.time())
     if success:
