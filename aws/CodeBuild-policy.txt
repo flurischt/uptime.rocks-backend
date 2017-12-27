@@ -87,6 +87,13 @@
                 "ssm:GetParameters"
             ],
             "Resource": "arn:aws:ssm:eu-central-1:************:parameter/CodeBuild/*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "events:*"
+            ],
+            "Resource": "arn:aws:events:eu-central-1:************:rule/uptime-rocks-*"
         }
     ]
 }
