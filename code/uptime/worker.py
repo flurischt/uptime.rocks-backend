@@ -35,7 +35,7 @@ def handler(event, context):
     logger.info('worker.handler started for service-id: {}'.format(item_id))
     service_to_process = get_item(item_id)
     url = service_to_process['url']
-    prev_status = service_to_process['status']
+    prev_status = service_to_process['check_status']
     label = service_to_process['label']
     status_code = 0
     try:

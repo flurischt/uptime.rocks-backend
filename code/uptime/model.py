@@ -10,7 +10,7 @@ SCHEMA = {
     'schema_version': 1,
     'label': '',
     'url': '',
-    'status': 'success',
+    'check_status': 'success',
     'last_check': 0,
     'next_check': 0,
     'check_interval': '15m',
@@ -77,9 +77,9 @@ def update_item(item, success=True):
         raise Exception("update_item() called without providing all necessary SCHEMA-attributes!")
     item['last_check'] = int(time.time())
     if success:
-        item['status'] = 'success'
+        item['check_status'] = 'success'
     else:
-        item['status'] = 'error'
+        item['check_status'] = 'error'
     put_item(**item)
 
 
@@ -89,7 +89,7 @@ def scan_for_services_to_check():
     """
     current_time = int(time.time())
     response = status_table.scan(
-        ProjectionExpression='id, status',
+        ProjectionExpression='id, check_status',
         FilterExpression = Attr('next_check').lte(current_time)
     )
     # handle pagination
@@ -98,7 +98,7 @@ def scan_for_services_to_check():
         for item in response['Items']:
             yield item
         response = status_table.scan(
-            ProjectionExpression = 'id, status',
+            ProjectionExpression = 'id, check_status',
             ExclusiveStartKey = last_key,
             FilterExpression = Attr('next_check').lte(current_time)
         )
