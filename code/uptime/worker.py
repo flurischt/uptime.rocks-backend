@@ -15,6 +15,7 @@ def handler(event, context):
     logger.info('worker.handler started for service-id: {}'.format(id))
     service_to_process = get_item(id)
     url = service_to_process['url']
+    status_code = 0
     try:
         response = requests.get(url)
         status_code = response.status_code
