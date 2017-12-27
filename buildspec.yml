@@ -2,8 +2,10 @@ version: 0.1
 phases:
   install:
     commands:
-      - apt update && apt install -y zip
+      - apt-get update && apt-get install -y zip
       - python -m pip install -q --upgrade -r code/requirements.txt -t code/requirements/
+        # SENTRY_DSN is defined as an env variable in CodeBuild 
+      - echo "SENTRY_DSN = '$SENTRY_DSN'" > code/local_secrets.py
       - cd code/ && zip ../code.zip -qr ./uptime && cd requirements/ && zip ../../code.zip --grow -qr ./* && cd ../../
   build:
     commands:
