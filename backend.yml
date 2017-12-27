@@ -72,6 +72,19 @@ Resources:
       Handler: uptime.worker.handler
       Role: !Sub ${CheckWorkerRole.Arn}
 
+  # worker that checks the uptime of a service
+  AlertHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./code.zip
+      Handler: uptime.alerts.handler
+      Role: !Sub ${AlertHandlerRole.Arn}
+      Events:
+        SNSEvent:
+          Type: SNS
+          Properties:
+            Topic: !Ref AlertTopic
+
   # IAM role for allowing the scheduler to invoke the workers
   CheckSchedulerRole:
     Type: AWS::IAM::Role
@@ -144,6 +157,41 @@ Resources:
             - dynamodb:GetItem
             Resource: !Sub ${StatusTable.Arn}
 
+  # role for sending emails
+  AlertHandlerRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: '2012-10-17'
+        Statement: 
+        - Effect: Allow
+          Principal: 
+            Service: lambda.amazonaws.com
+          Action: 
+          - sts:AssumeRole
+      Path: '/'
+      Policies: 
+      - PolicyName: logs
+        PolicyDocument: 
+          Statement: 
+          - Effect: Allow
+            Action: 
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: arn:aws:logs:*:*:*
+      - PolicyName: ses
+        PolicyDocument: 
+          Statement: 
+          - Effect: Allow
+            Action: 
+            - ses:SendEmail
+            Resource: "*"
+
   # application state in DynamoDB
   StatusTable:
     Type: AWS::Serverless::SimpleTable
+
+  # SNS topic for alerts
+  AlertTopic:
+    Type: AWS::SNS::Topic
