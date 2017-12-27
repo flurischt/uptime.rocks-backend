@@ -70,6 +70,7 @@ Resources:
     Properties:
       CodeUri: ./code.zip
       Handler: uptime.worker.handler
+      Role: !Sub ${CheckWorkerRole.Arn}
 
   # IAM role for allowing the scheduler to invoke the workers
   CheckSchedulerRole:
@@ -109,6 +110,38 @@ Resources:
             - dynamodb:PutItem
             - dynamidb:GetItem
             - dynamodb:Scan
+            Resource: !Sub ${StatusTable.Arn}
+
+  # IAM role for allowing the worker to access dynamodb
+  CheckWorkerRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: '2012-10-17'
+        Statement: 
+        - Effect: Allow
+          Principal: 
+            Service: lambda.amazonaws.com
+          Action: 
+          - sts:AssumeRole
+      Path: '/'
+      Policies: 
+      - PolicyName: logs
+        PolicyDocument: 
+          Statement: 
+          - Effect: Allow
+            Action: 
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: arn:aws:logs:*:*:*
+      - PolicyName: dynamodb
+        PolicyDocument: 
+          Statement: 
+          - Effect: Allow
+            Action: 
+            - dynamodb:PutItem
+            - dynamodb:GetItem
             Resource: !Sub ${StatusTable.Arn}
 
   # application state in DynamoDB

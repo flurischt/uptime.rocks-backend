@@ -20,6 +20,7 @@ def handler(event, context):
             Payload = json.dumps(service),
         )
         count += 1
+    logger.info('Enqueued {} services to be checked'.format(count))
     return json.dumps({
         'num_enqueued': count
     })

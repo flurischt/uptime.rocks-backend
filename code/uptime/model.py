@@ -10,6 +10,7 @@ SCHEMA = {
     'schema_version': 1,
     'label': '',
     'url': '',
+    'status': 'success',
     'last_check': 0,
     'next_check': 0,
     'check_interval': '15m',
@@ -33,6 +34,15 @@ def _update_next_check(item):
     item['next_check'] = item['last_check'] + CHECK_INTERVALS_IN_SEC[item['check_interval']]
 
 
+def get_item(id):
+    """
+    read all attributes for an item identified by id
+    """
+    result = status_table.get_item(
+        Key= {'id': id}
+    )
+    return result['Item']
+
 def put_item(**kwargs): 
     """
     create an item in DynamoDB using uptime.model.SCHEMA and return its id.
@@ -52,7 +62,24 @@ def put_item(**kwargs):
     status_table.put_item(
         Item=new_item
     )
-    return new_item.id
+    return new_item['id']
+
+
+def update_item(item, success=True):
+    """
+    puts the given item to dynamodb and updates the last_check attribute to NOW.
+    """
+    # since we'll use PUT make sure that the caller has provided all attributes
+    # if an attribute is missing then this would be deleted from the database
+    # TODO: needs a fix for schema-updates
+    if not SCHEMA.keys() - (SCHEMA.keys() & item.keys()):
+        raise Exception("update_item() called without providing all necessary SCHEMA-attributes!")
+    item['last_check'] = int(time.time())
+    if success:
+        item['status'] = 'success'
+    else:
+        item['status'] = 'error'
+    put_item(**item)
 
 
 def scan_for_services_to_check():
