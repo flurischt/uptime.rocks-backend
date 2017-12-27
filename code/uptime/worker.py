@@ -11,12 +11,13 @@ from uptime.model import get_item, update_item
 sns = boto3.client('sns')
 topic = os.getenv('TOPIC_NAME')
 
-def _send_alert(item_id, message):
+def _send_alert(item_id, item_label, message):
     logger.info('sending alert for service-id: {}'.format(item_id))
     sns.publish(
         TopicArn = topic,
         Message=json.dumps({
             'id': item_id,
+            'label': item_label, 
             'message': message 
         }),
         # we'll send json as a "string". If set to json then we would have to use 
@@ -35,6 +36,7 @@ def handler(event, context):
     service_to_process = get_item(item_id)
     url = service_to_process['url']
     prev_status = service_to_process['status']
+    label = service_to_process['label']
     status_code = 0
     try:
         response = requests.get(url)
@@ -45,9 +47,9 @@ def handler(event, context):
     # TODO: implement some more involved checks
     if status_code == 200:
         update_item(service_to_process)
-        if prev_status <> 'success':
-            _send_alert(item_id, "service has recovered!")    
+        if prev_status != 'success':
+            _send_alert(item_id, label, 'service has recovered!')
     else:
-        _send_alert(item_id, "service is down!")
+        _send_alert(item_id, label, 'service is down!')
         update_item(service_to_process, success=False)
     return 'Finished'
