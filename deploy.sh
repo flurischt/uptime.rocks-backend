@@ -8,7 +8,7 @@ python3.6 -m pip install -q --upgrade -r code/requirements.txt -t code/requireme
 
 # add our code and the requirements/ directory to the zip
 cd code/ 
-zip ../code.zip -qr ./uptime 
+zip ../code.zip -qr ./uptime ./local_secrets.py
 cd requirements/
 zip ../../code.zip --grow -qr ./*
 cd ../../

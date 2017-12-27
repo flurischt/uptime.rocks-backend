@@ -5,8 +5,8 @@ phases:
       - apt-get update && apt-get install -y zip
       - python -m pip install -q --upgrade -r code/requirements.txt -t code/requirements/
         # SENTRY_DSN is defined as an env variable in CodeBuild 
-      - echo "SENTRY_DSN = '$SENTRY_DSN'" > code/local_secrets.py
-      - cd code/ && zip ../code.zip -qr ./uptime && cd requirements/ && zip ../../code.zip --grow -qr ./* && cd ../../
+      - cat code/local_secrets.py.txt | sed -e 's/REPLACE_ME/$SENTRY_DSN/' > code/local_secrets.py
+      - cd code/ && zip ../code.zip -qr ./uptime ./local_secrets.py && cd requirements/ && zip ../../code.zip --grow -qr ./* && cd ../../
   build:
     commands:
       - aws cloudformation package --region eu-central-1 --template-file ./backend.yml --s3-bucket uptime-rocks-backend --output-template-file packaged-template.yml
