@@ -8,6 +8,7 @@ This is the backend :)
  * ~~enable notifications~~
  * ~~use custom user-agent~~
  * enable "passive" monitoring (service notifies us about status)
+ * conditional updates when writing to dynamodb?
  * contact AWS support to get out of SES sandbox
  * other notification types
  * frontend
