@@ -11,6 +11,7 @@ Globals:
     Environment:
       Variables:
         TABLE_NAME: !Ref StatusTable
+        TOPIC_NAME: !Ref AlertTopic
 
 Resources:
   # /ping API to be called by clients
@@ -156,6 +157,13 @@ Resources:
             - dynamodb:PutItem
             - dynamodb:GetItem
             Resource: !Sub ${StatusTable.Arn}
+      - PolicyName: alerts
+        PolicyDocument: 
+          Statement: 
+          - Effect: Allow
+            Action: 
+            - SNS:Publish
+            Resource: !Sub ${AlertTopic.Arn}
 
   # role for sending emails
   AlertHandlerRole:

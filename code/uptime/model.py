@@ -89,7 +89,7 @@ def scan_for_services_to_check():
     """
     current_time = int(time.time())
     response = status_table.scan(
-        ProjectionExpression='id',
+        ProjectionExpression='id, status',
         FilterExpression = Attr('next_check').lte(current_time)
     )
     # handle pagination
@@ -98,7 +98,7 @@ def scan_for_services_to_check():
         for item in response['Items']:
             yield item
         response = status_table.scan(
-            ProjectionExpression = 'id',
+            ProjectionExpression = 'id, status',
             ExclusiveStartKey = last_key,
             FilterExpression = Attr('next_check').lte(current_time)
         )
