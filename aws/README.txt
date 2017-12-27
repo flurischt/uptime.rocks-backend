@@ -1,2 +1,2 @@
-This directory contains AWS IAM policy needed to setup CodeBuild. Replace ************ with the actual user-id when using this.
-The policy assumes (cloudformation) stack- and codebuild-names "uptime-rocks".
+This directory contains the AWS IAM policy needed to setup CodeBuild. Replace ************ with the actual user-id when using this.
+The policy assumes that the (cloudformation) stack- and codebuild-name is "uptime-rocks".
