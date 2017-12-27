@@ -4,7 +4,9 @@ This is the backend :)
 ![build-status](https://codebuild.eu-central-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiekZnWGx1a2k3Z2xLQnd6Q1h5SG1Tc1Z4RE5nbUZvTXdEUERzc2k0S3EvOEpQVVNkcis1amRoZ20weU92K1prbmowOFNyaGdNdjZnZzJJRlo0c1dqRE9ZPSIsIml2UGFyYW1ldGVyU3BlYyI6Ik5aWUhLN1g2SU5qVTBoMHMiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
 
 ## TODO
- * enable Scheduling
+ * ~~enable Scheduling~~
+ * enable notifications
+ * frontend
  * use SNS and a DeadLetterQueue instead of async lambda calls?
  * ...
 
