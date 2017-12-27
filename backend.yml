@@ -163,7 +163,7 @@ Resources:
           - Effect: Allow
             Action: 
             - SNS:Publish
-            Resource: !Sub ${AlertTopic.Arn}
+            Resource: !Ref AlertTopic
 
   # role for sending emails
   AlertHandlerRole:
