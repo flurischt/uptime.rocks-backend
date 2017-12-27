@@ -4,6 +4,7 @@ import os
 import boto3
 from boto3.dynamodb.conditions import Attr
 
+
 SCHEMA = {
     'id': '',
     'schema_version': 1,
@@ -11,7 +12,14 @@ SCHEMA = {
     'url': '',
     'last_check': 0,
     'next_check': 0,
-    'check_interval': 0,
+    'check_interval': '15m',
+}
+
+CHECK_INTERVALS_IN_SEC = {
+    '1m': 60,
+    '5m': 5 * 60,
+    '15m': 15 * 60,
+    '1h': 60 * 60
 }
 
 status_table = boto3.resource('dynamodb').Table(os.getenv('TABLE_NAME'))
@@ -21,7 +29,8 @@ def _update_next_check(item):
     """
     helper function to update the next_check attribute.
     """
-    item['next_check'] = item['last_check'] + item['check_interval']
+    assert item['check_interval'] in CHECK_INTERVALS_IN_SEC
+    item['next_check'] = item['last_check'] + CHECK_INTERVALS_IN_SEC[item['check_interval']]
 
 
 def put_item(**kwargs): 
