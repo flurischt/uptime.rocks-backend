@@ -52,6 +52,7 @@ def handler(event, context):
         if prev_status != 'success':
             _send_alert(item_id, label, 'service has recovered!')
     else:
-        _send_alert(item_id, label, 'service is down!')
         update_item(service_to_process, success=False)
+        if prev_status == 'success':
+            _send_alert(item_id, label, 'service is down!')
     return 'Finished'
