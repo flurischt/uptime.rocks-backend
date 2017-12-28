@@ -15,6 +15,7 @@ This is the backend :)
  * current testing/deployment process is a mess. can we get CodeBuild to run some tests before deployment?
  * frontend
  * use SNS and a DeadLetterQueue instead of async lambda calls?
+ * split lambda code into different zips to make them smaller? (is the size a cost-factor on AWS?)
  * ...
 
 ## Notes to self:
