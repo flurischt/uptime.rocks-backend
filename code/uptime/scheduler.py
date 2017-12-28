@@ -15,9 +15,9 @@ def handler(event, context):
     for service in scan_for_services_to_check():
         logger.info('asynchronously invoking lambda: %s for id=%s', worker_name, service['id'])
         lambdas.invoke(
-            FunctionName = worker_name,
-            InvocationType = 'Event',
-            Payload = json.dumps(service),
+            FunctionName=worker_name,
+            InvocationType='Event',
+            Payload=json.dumps(service),
         )
         count += 1
     logger.info('Enqueued %s services to be checked', count)

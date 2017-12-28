@@ -14,21 +14,21 @@ topic = os.getenv('TOPIC_NAME')
 def _send_alert(item_id, item_label, message):
     logger.info('sending alert for service-id: %s', item_id)
     sns.publish(
-        TopicArn = topic,
+        TopicArn=topic,
         Message=json.dumps({
             'id': item_id,
-            'label': item_label, 
-            'message': message 
+            'label': item_label,
+            'message': message
         }),
-        # we'll send json as a "string". If set to json then we would have to use 
+        # we'll send json as a "string". If set to json then we would have to use
         MessageStructure='string',
     )
 
 @sentry_client.capture_exceptions
 def handler(event, context):
     """
-    checks the service identified by 'id' 
-    
+    checks the service identified by 'id'
+
     for now a simple http-status_code == 200 check is implemented.
     """
     item_id = event['id']

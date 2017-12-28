@@ -34,12 +34,12 @@ def _update_next_check(item):
     item['next_check'] = item['last_check'] + CHECK_INTERVALS_IN_SEC[item['check_interval']]
 
 
-def get_item(id):
+def get_item(item_id):
     """
-    read all attributes for an item identified by id
+    read all attributes for an item identified by item_id
     """
     result = status_table.get_item(
-        Key= {'id': id}
+        Key={'id': item_id}
     )
     return result['Item']
 
@@ -90,7 +90,7 @@ def scan_for_services_to_check():
     current_time = int(time.time())
     response = status_table.scan(
         ProjectionExpression='id, check_status',
-        FilterExpression = Attr('next_check').lte(current_time)
+        FilterExpression=Attr('next_check').lte(current_time)
     )
     # handle pagination
     while 'LastEvaluatedKey' in response.keys():
@@ -98,9 +98,9 @@ def scan_for_services_to_check():
         for item in response['Items']:
             yield item
         response = status_table.scan(
-            ProjectionExpression = 'id, check_status',
-            ExclusiveStartKey = last_key,
-            FilterExpression = Attr('next_check').lte(current_time)
+            ProjectionExpression='id, check_status',
+            ExclusiveStartKey=last_key,
+            FilterExpression=Attr('next_check').lte(current_time)
         )
     # and yield the remaining elements
     for item in response['Items']:

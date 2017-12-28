@@ -40,4 +40,4 @@ def handler(event, context):
         payload['id'],
         response['MessageId']
     )
-    return { 'messageId': response['MessageId'] }
+    return {'messageId': response['MessageId']}
