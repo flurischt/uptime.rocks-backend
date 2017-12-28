@@ -12,7 +12,7 @@ sns = boto3.client('sns')
 topic = os.getenv('TOPIC_NAME')
 
 def _send_alert(item_id, item_label, message):
-    logger.info('sending alert for service-id: {}'.format(item_id))
+    logger.info('sending alert for service-id: %s', item_id)
     sns.publish(
         TopicArn = topic,
         Message=json.dumps({
@@ -32,7 +32,7 @@ def handler(event, context):
     for now a simple http-status_code == 200 check is implemented.
     """
     item_id = event['id']
-    logger.info('worker.handler started for service-id: {}'.format(item_id))
+    logger.info('worker.handler started for service-id: %s', item_id)
     service_to_process = get_item(item_id)
     url = service_to_process['url']
     prev_status = service_to_process['check_status']
@@ -43,7 +43,7 @@ def handler(event, context):
             'User-Agent': 'UptimeCheck/0.1 (https://uptime.rocks)'
         })
         status_code = response.status_code
-        logger.info('service-id {}: http-check resulted in status-code: {}'.format(item_id, status_code))
+        logger.info('service-id %s: http-check resulted in status-code: %s', item_id, status_code)
     except ConnectionError:
         pass  # cannot connect to service. treat the service as down
     except RequestException:

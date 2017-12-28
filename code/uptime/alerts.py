@@ -36,7 +36,8 @@ def handler(event, context):
         #]
     )
     logger.info(
-        'sent message regarding service-id: {}. MessageId: {}'
-            .format(payload['id'], response['MessageId'])
+        'sent message regarding service-id: %s. MessageId: %s',
+        payload['id'],
+        response['MessageId']
     )
     return { 'messageId': response['MessageId'] }
