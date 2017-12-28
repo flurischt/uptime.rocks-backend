@@ -94,6 +94,13 @@
                 "events:*"
             ],
             "Resource": "arn:aws:events:eu-central-1:************:rule/uptime-rocks-*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sqs:*"
+            ],
+            "Resource": "arn:aws:events:eu-central-1:************:rule/uptime-rocks-*"
         }
     ]
 }

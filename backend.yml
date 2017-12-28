@@ -85,6 +85,9 @@ Resources:
           Type: SNS
           Properties:
             Topic: !Ref AlertTopic
+      DeadLetterQueue:
+        Type: SQS
+        TargetArn: !Sub ${UnsentAlerts.Arn}
 
   # IAM role for allowing the scheduler to invoke the workers
   CheckSchedulerRole:
@@ -203,3 +206,7 @@ Resources:
   # SNS topic for alerts
   AlertTopic:
     Type: AWS::SNS::Topic
+
+  # Queue to track alerts that have not been sent to the user
+  UnsentAlerts:
+    Type: AWS::SQS::Queue
