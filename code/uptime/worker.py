@@ -4,7 +4,7 @@ import json
 import boto3
 import requests
 
-from requests.exceptions import RequestException
+from requests.exceptions import RequestException, ConnectionError
 from uptime.logging import sentry_client, logger
 from uptime.model import get_item, update_item
 
@@ -44,7 +44,10 @@ def handler(event, context):
         })
         status_code = response.status_code
         logger.info('service-id {}: http-check resulted in status-code: {}'.format(item_id, status_code))
+    except ConnectionError:
+        pass  # cannot connect to service. treat the service as down
     except RequestException:
+        # for all other exceptions from requests treat the service as down but log the exception
         sentry_client.captureException()
     # TODO: implement some more involved checks
     if status_code == 200:
