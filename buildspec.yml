@@ -2,14 +2,15 @@ version: 0.1
 phases:
   install:
     commands:
-      - apt-get update && apt-get install -y zip pylint3
-      - python -m pip install -q --upgrade -r code/requirements.txt -t code/requirements/
+      - apt-get update && apt-get install -y zip
+      - python3 -m pip install -q --upgrade -r code/requirements.txt -t code/requirements/
+      - python3 -m pip install -q --upgrade pylint
         # SENTRY_DSN is defined as an env variable in CodeBuild 
       - cat code/local_secrets.py.txt | sed -e "s|REPLACE_ME|${SENTRY_DSN}|" > code/local_secrets.py
   build:
     commands:
       # Abort deployment if pylint finds something of type ERROR
-      - PYTHONPATH=code/requirements/ pylint3 -E code/uptime/
+      - PYTHONPATH=code/requirements/ pylint -E code/uptime/
       - cd code/ && zip ../code.zip -qr ./uptime ./local_secrets.py && cd requirements/ && zip ../../code.zip --grow -qr ./* && cd ../../
   post_build:
     commands:
