@@ -167,6 +167,13 @@ Resources:
             Action: 
             - SNS:Publish
             Resource: !Ref AlertTopic
+      - PolicyName: deadletter
+        PolicyDocument:
+          Statement:
+          - Effect: Allow
+            Action:
+            - SQS:SendMessage
+            Resource: !Ref UnsentAlerts
 
   # role for sending emails
   AlertHandlerRole:
