@@ -21,12 +21,12 @@ def handler(event, context):
         },
         Message={
             'Subject': {
-                'Data': 'uptime.rocks: Alert for service {}!'.format(payload['label']),
+                'Data': 'uptime.rocks alert for service {}: {}'.format(payload['label'], payload['message']),
                 'Charset': 'utf8'
             },
             'Body': {
                 'Text': {
-                    'Data': 'Service-ID: {} , Message: {}'.format(payload['id'], payload['message']),
+                    'Data': 'Service-ID: {} , Label: {}'.format(payload['id'], payload['label']),
                     'Charset': 'utf8'
                 }
             }
