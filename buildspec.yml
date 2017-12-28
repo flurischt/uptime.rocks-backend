@@ -12,7 +12,5 @@ phases:
       # Abort deployment if pylint finds something of type ERROR
       - PYTHONPATH=code/requirements/ pylint -E code/uptime/
       - cd code/ && zip ../code.zip -qr ./uptime ./local_secrets.py && cd requirements/ && zip ../../code.zip --grow -qr ./* && cd ../../
-  post_build:
-    commands:
       - aws cloudformation package --region eu-central-1 --template-file ./backend.yml --s3-bucket uptime-rocks-backend --output-template-file packaged-template.yml
       - aws cloudformation deploy  --region eu-central-1 --template-file ./packaged-template.yml --stack-name uptime-rocks --capabilities CAPABILITY_IAM
