@@ -20,9 +20,11 @@ This is the backend :)
 
 ## Notes to self:
 
-### Setup
+### (Developer) Setup
 ```bash
-python3 -m pip install awscli
+python3 -m venv venv
+. ./venv/bin/activate
+pip install awscli
 aws configure
 ...
 ```

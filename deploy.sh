@@ -5,11 +5,14 @@
 # usually the deployment is done using CodeBuild and buildspec.yml
 #
 
+# we'll use pylint and awscli in the virtualenv
+. ./venv/bin/activate
+
 # get requirements and put everything into code.zip
 echo packaging code.zip
 rm -rf code/requirements/*
 touch code/requirements/.gitkeep
-python3.6 -m pip install -q --upgrade -r code/requirements.txt -t code/requirements/
+pip install -q --upgrade -r code/requirements.txt -t code/requirements/
 
 PYTHONPATH=code/requirements/ pylint -E code/uptime
 if [ $? -ne 0 ]; then
@@ -40,3 +43,6 @@ aws cloudformation deploy  \
  --template-file ./packaged-template.yml \
  --stack-name uptime-rocks \
  --capabilities CAPABILITY_IAM
+
+# exit virtualenv
+deactivate

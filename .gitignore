@@ -11,3 +11,6 @@ code/requirements/
 !code/requirements/.gitkeep
 !code/local_secrets.py.txt
 code/local_secrets.py
+
+# ignore the virtualenv
+venv/
