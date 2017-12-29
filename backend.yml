@@ -108,19 +108,26 @@ Resources:
           Action: 
           - ses:SendEmail
           Resource: "*"
-      #- Statement:
-      #  - Effect: Allow
-      #    Action:
-      #    - sqs:SendMessage
-      #    Resource: !Sub ${UnsentAlerts.Arn}
+      # actually SAM should create this permission on its own. We'll do it manually to work around
+      # the problems described in the DeadLetterQueue section below
+      - Statement:
+        - Effect: Allow
+          Action:
+          - sqs:SendMessage
+          Resource: !Sub ${UnsentAlerts.Arn}
       Events:
         SNSEvent:
           Type: SNS
           Properties:
             Topic: !Ref AlertTopic
-      #DeadLetterQueue:
-      #  Type: SQS
-      #  TargetArn: !Ref UnsentAlerts.Arn
+      # If you run into problems when attaching the DeadLetterQueue:
+      #  - comment out the DeadLetterQueue definition below.
+      #  - then deploy (and therefore give the execution-role the permission "sqs:SendMessage")
+      #  - uncomment the definition below and deploy again
+      # Source: https://github.com/awslabs/serverless-application-model/issues/217
+      DeadLetterQueue:
+        Type: SQS
+        TargetArn: !GetAtt UnsentAlerts.Arn
 
   # application state in DynamoDB
   StatusTable:
