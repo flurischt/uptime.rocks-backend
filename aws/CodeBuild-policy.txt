@@ -98,9 +98,25 @@
         {
             "Effect": "Allow",
             "Action": [
+                "sns:*"
+            ],
+            "Resource": "arn:aws:sns:eu-central-1:************:uptime-rocks-*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
                 "sqs:*"
             ],
-            "Resource": "arn:aws:events:eu-central-1:************:rule/uptime-rocks-*"
+            "Resource": "arn:aws:sqs:eu-central-1:************:uptime-rocks-*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:*"
+            ],
+            "Resource": [
+                "arn:aws:iam::************:role/uptime-rocks-*"
+            ]
         }
     ]
 }
