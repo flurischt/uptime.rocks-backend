@@ -55,7 +55,19 @@ Resources:
     Properties:
       CodeUri: ./code.zip
       Handler: uptime.scheduler.handler
-      Role: !Sub ${CheckSchedulerRole.Arn}
+      Policies:
+      - Statement: 
+        - Effect: Allow
+          Action: 
+          - lambda:InvokeFunction
+          Resource: !Sub ${CheckWorker.Arn}
+      - Statement: 
+        - Effect: Allow
+          Action: 
+          - dynamodb:PutItem
+          - dynamidb:GetItem
+          - dynamodb:Scan
+          Resource: !Sub ${StatusTable.Arn}
       Environment:
         Variables:
           WORKER_LAMBDA_NAME: !Ref CheckWorker
@@ -71,7 +83,18 @@ Resources:
     Properties:
       CodeUri: ./code.zip
       Handler: uptime.worker.handler
-      Role: !Sub ${CheckWorkerRole.Arn}
+      Policies:
+      - Statement: 
+        - Effect: Allow
+          Action: 
+          - dynamodb:PutItem
+          - dynamodb:GetItem
+          Resource: !Sub ${StatusTable.Arn}
+      - Statement: 
+        - Effect: Allow
+          Action: 
+          - SNS:Publish
+          Resource: !Ref AlertTopic
 
   # worker that checks the uptime of a service
   AlertHandler:
@@ -98,85 +121,6 @@ Resources:
       #DeadLetterQueue:
       #  Type: SQS
       #  TargetArn: !Ref UnsentAlerts.Arn
-
-  # IAM role for allowing the scheduler to invoke the workers
-  CheckSchedulerRole:
-    Type: AWS::IAM::Role
-    Properties: 
-      AssumeRolePolicyDocument: 
-        Version: '2012-10-17'
-        Statement: 
-        - Effect: Allow
-          Principal: 
-            Service: lambda.amazonaws.com
-          Action: 
-          - sts:AssumeRole
-      Path: '/'
-      Policies: 
-      - PolicyName: logs
-        PolicyDocument: 
-          Statement: 
-          - Effect: Allow
-            Action: 
-            - logs:CreateLogGroup
-            - logs:CreateLogStream
-            - logs:PutLogEvents
-            Resource: arn:aws:logs:*:*:*
-      - PolicyName: lambda
-        PolicyDocument: 
-          Statement: 
-          - Effect: Allow
-            Action: 
-            - lambda:InvokeFunction
-            Resource: !Sub ${CheckWorker.Arn}
-      - PolicyName: dynamodb
-        PolicyDocument: 
-          Statement: 
-          - Effect: Allow
-            Action: 
-            - dynamodb:PutItem
-            - dynamidb:GetItem
-            - dynamodb:Scan
-            Resource: !Sub ${StatusTable.Arn}
-
-  # IAM role for allowing the worker to access dynamodb
-  CheckWorkerRole:
-    Type: AWS::IAM::Role
-    Properties: 
-      AssumeRolePolicyDocument: 
-        Version: '2012-10-17'
-        Statement: 
-        - Effect: Allow
-          Principal: 
-            Service: lambda.amazonaws.com
-          Action: 
-          - sts:AssumeRole
-      Path: '/'
-      Policies: 
-      - PolicyName: logs
-        PolicyDocument: 
-          Statement: 
-          - Effect: Allow
-            Action: 
-            - logs:CreateLogGroup
-            - logs:CreateLogStream
-            - logs:PutLogEvents
-            Resource: arn:aws:logs:*:*:*
-      - PolicyName: dynamodb
-        PolicyDocument: 
-          Statement: 
-          - Effect: Allow
-            Action: 
-            - dynamodb:PutItem
-            - dynamodb:GetItem
-            Resource: !Sub ${StatusTable.Arn}
-      - PolicyName: alerts
-        PolicyDocument: 
-          Statement: 
-          - Effect: Allow
-            Action: 
-            - SNS:Publish
-            Resource: !Ref AlertTopic
 
   # application state in DynamoDB
   StatusTable:
