@@ -79,15 +79,25 @@ Resources:
     Properties:
       CodeUri: ./code.zip
       Handler: uptime.alerts.handler
-      Role: !Sub ${AlertHandlerRole.Arn}
+      Policies:
+      - Statement: 
+        - Effect: Allow
+          Action: 
+          - ses:SendEmail
+          Resource: "*"
+      #- Statement:
+      #  - Effect: Allow
+      #    Action:
+      #    - sqs:SendMessage
+      #    Resource: !Sub ${UnsentAlerts.Arn}
       Events:
         SNSEvent:
           Type: SNS
           Properties:
             Topic: !Ref AlertTopic
-      DeadLetterQueue:
-        Type: SQS
-        TargetArn: !Sub ${UnsentAlerts.Arn}
+      #DeadLetterQueue:
+      #  Type: SQS
+      #  TargetArn: !Ref UnsentAlerts.Arn
 
   # IAM role for allowing the scheduler to invoke the workers
   CheckSchedulerRole:
@@ -167,44 +177,6 @@ Resources:
             Action: 
             - SNS:Publish
             Resource: !Ref AlertTopic
-      - PolicyName: deadletter
-        PolicyDocument:
-          Statement:
-          - Effect: Allow
-            Action:
-            - SQS:SendMessage
-            Resource: !Ref UnsentAlerts
-
-  # role for sending emails
-  AlertHandlerRole:
-    Type: AWS::IAM::Role
-    Properties: 
-      AssumeRolePolicyDocument: 
-        Version: '2012-10-17'
-        Statement: 
-        - Effect: Allow
-          Principal: 
-            Service: lambda.amazonaws.com
-          Action: 
-          - sts:AssumeRole
-      Path: '/'
-      Policies: 
-      - PolicyName: logs
-        PolicyDocument: 
-          Statement: 
-          - Effect: Allow
-            Action: 
-            - logs:CreateLogGroup
-            - logs:CreateLogStream
-            - logs:PutLogEvents
-            Resource: arn:aws:logs:*:*:*
-      - PolicyName: ses
-        PolicyDocument: 
-          Statement: 
-          - Effect: Allow
-            Action: 
-            - ses:SendEmail
-            Resource: "*"
 
   # application state in DynamoDB
   StatusTable:
