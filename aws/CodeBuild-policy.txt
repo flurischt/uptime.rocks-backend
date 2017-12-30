@@ -117,6 +117,16 @@
             "Resource": [
                 "arn:aws:iam::************:role/uptime-rocks-*"
             ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "cloudwatch:PutMetricAlarm",
+                "cloudwatch:DeleteAlarms"
+            ],
+            "Resource": [
+                "*"
+            ]
         }
     ]
 }
