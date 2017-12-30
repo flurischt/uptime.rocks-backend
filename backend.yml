@@ -184,6 +184,8 @@ Resources:
       ComparisonOperator: GreaterThanThreshold
       AlarmActions: 
       - !Ref MonitoringTopic
+      OKActions:
+      - !Ref MonitoringTopic  
 
   UnprocessedChecks:
     Type: AWS::CloudWatch::Alarm
@@ -200,3 +202,5 @@ Resources:
       ComparisonOperator: GreaterThanThreshold
       AlarmActions: 
       - !Ref MonitoringTopic
+      OKActions:
+      - !Ref MonitoringTopic      
