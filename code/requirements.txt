@@ -1,2 +1,3 @@
+requests
 raven
 boto3
