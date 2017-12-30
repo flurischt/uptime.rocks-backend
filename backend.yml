@@ -14,6 +14,17 @@ Globals:
         TOPIC_NAME: !Ref AlertTopic
 
 Resources:
+  #
+  # The following topic is used to monitor the application state
+  # define the recipient for CloudWatch Alarms here:
+  #
+  MonitoringTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+      - Endpoint: monitoring@uptime.rocks
+        Protocol: email
+
   # /ping API to be called by clients
   PingApi:
     Type: AWS::Serverless::Api
@@ -140,3 +151,23 @@ Resources:
   # Queue to track alerts that have not been sent to the user
   UnsentAlerts:
     Type: AWS::SQS::Queue
+
+  #
+  # MONITORING
+  # below a couple of cloudwatch alarms that will be sent to the developer
+  #
+  UnsentAlertsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      Namespace: AWS/SQS
+      MetricName: ApproximateNumberOfMessagesVisible
+      Dimensions:
+      - Name: QueueName
+        Value: !GetAtt UnsentAlerts.QueueName
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 0
+      ComparisonOperator: GreaterThanThreshold
+      AlarmActions: 
+      - !Ref MonitoringTopic
