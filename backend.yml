@@ -106,6 +106,16 @@ Resources:
           Action: 
           - SNS:Publish
           Resource: !Ref AlertTopic
+      - Statement:
+        - Effect: Allow
+          Action:
+          - sqs:SendMessage
+          Resource: !Sub ${WorkerDeadLetterQueue.Arn}
+      # See the comments in AlertHandler if you run into permission problems when deploying
+      # the DeadLetter configuration
+      DeadLetterQueue:
+        Type: SQS
+        TargetArn: !GetAtt WorkerDeadLetterQueue.Arn
 
   # worker that checks the uptime of a service
   AlertHandler:
@@ -148,7 +158,10 @@ Resources:
   AlertTopic:
     Type: AWS::SNS::Topic
 
-  # Queue to track alerts that have not been sent to the user
+  # Queues to track unprocessed worker-messages and unsent alerts
+  WorkerDeadLetterQueue:
+    Type: AWS::SQS::Queue
+
   UnsentAlerts:
     Type: AWS::SQS::Queue
 
@@ -164,6 +177,22 @@ Resources:
       Dimensions:
       - Name: QueueName
         Value: !GetAtt UnsentAlerts.QueueName
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 0
+      ComparisonOperator: GreaterThanThreshold
+      AlarmActions: 
+      - !Ref MonitoringTopic
+
+  UnprocessedChecks:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      Namespace: AWS/SQS
+      MetricName: ApproximateNumberOfMessagesVisible
+      Dimensions:
+      - Name: QueueName
+        Value: !GetAtt WorkerDeadLetterQueue.QueueName
       Statistic: Sum
       Period: 60
       EvaluationPeriods: 1
