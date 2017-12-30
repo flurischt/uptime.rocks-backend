@@ -29,16 +29,17 @@ function package {
         cd ../../
 }
 
-git status code/ | grep "nothing to commit, working directory clean" > /dev/null
-if [ $? -eq 0 ]; then
-    if [ -f code.zip ]; then
-        echo "no code-changes. redeploying existing code.zip"
-    else
-        package
-    fi
-else
-    package
-fi
+#git status code/ | grep "nothing to commit, working directory clean" > /dev/null
+#if [ $? -eq 0 ]; then
+#    if [ -f code.zip ]; then
+#        echo "no code-changes. redeploying existing code.zip"
+#    else
+#        package
+#    fi
+#else
+#    package
+#fi
+package
 
 # package
 aws cloudformation package \
