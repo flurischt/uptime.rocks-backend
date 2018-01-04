@@ -4,12 +4,15 @@ import json
 import boto3
 import requests
 
-from requests.exceptions import RequestException, ConnectionError
+from requests.exceptions import RequestException, ConnectionError, Timeout
 from uptime.logging import sentry_client, logger
 from uptime.model import get_item, update_item
 
 sns = boto3.client('sns')
 topic = os.getenv('TOPIC_NAME')
+
+# timout in seconds until we treat the service as down
+GET_TIMEOUT_IN_SEC = 15
 
 def _send_alert(item_id, item_label, message):
     logger.info('sending alert for service-id: %s', item_id)
@@ -39,17 +42,21 @@ def handler(event, context):
     label = service_to_process['label']
     status_code = 0
     try:
-        response = requests.get(url, headers={
-            'User-Agent': 'UptimeCheck/0.1 (https://uptime.rocks)'
-        })
+        response = requests.get(
+            url,
+            timeout=GET_TIMEOUT_IN_SEC 
+            headers={
+                'User-Agent': 'UptimeCheck/0.1 (https://uptime.rocks)'
+            }
+        )
         status_code = response.status_code
         logger.info('service-id %s: http-check resulted in status-code: %s', item_id, status_code)
-    except ConnectionError:
-        pass  # cannot connect to service. treat the service as down
+    except (ConnectionError, Timeout):
+        pass  # treat the service as down
     except RequestException:
         # for all other exceptions from requests treat the service as down but log the exception
         sentry_client.captureException()
-    # TODO: implement some more involved checks
+    # TODO: implement some more involved checks (e.g. parse a status-json?)
     if status_code == 200:
         update_item(service_to_process)
         if prev_status != 'success':
