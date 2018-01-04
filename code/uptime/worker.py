@@ -44,7 +44,7 @@ def handler(event, context):
     try:
         response = requests.get(
             url,
-            timeout=GET_TIMEOUT_IN_SEC 
+            timeout=GET_TIMEOUT_IN_SEC,
             headers={
                 'User-Agent': 'UptimeCheck/0.1 (https://uptime.rocks)'
             }
